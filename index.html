@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Herní Automat 100 Hot Wild</title>
+    <title>Herní Automat - 6 Válců a 8 Sloupců</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -22,20 +22,28 @@
         }
         .reels {
             display: flex;
-            justify-content: space-around;
             margin-bottom: 20px;
         }
         .reel {
             background-color: #333;
-            width: 100px;
-            height: 120px;
+            width: 80px;
+            height: 150px;
             display: flex;
             justify-content: center;
             align-items: center;
             font-size: 36px;
             border-radius: 5px;
             color: yellow;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            margin: 0 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        .symbol {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-size: 36px;
+            animation: spin 1s linear infinite;
         }
         .button {
             background-color: #28a745;
@@ -55,17 +63,31 @@
             font-size: 24px;
             color: yellow;
         }
+
+        /* Animace točení válce */
+        @keyframes spin {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-1000%);
+            }
+        }
     </style>
 </head>
 <body>
 
-    <h1>100 Hot Wild - Herní Automat</h1>
+    <h1>Herní Automat - 6 Válců a 8 Sloupců</h1>
 
     <div class="slot-machine">
         <div class="reels">
-            <div class="reel" id="reel1">🍒</div>
-            <div class="reel" id="reel2">🍒</div>
-            <div class="reel" id="reel3">🍒</div>
+            <!-- 6 válců -->
+            <div class="reel" id="reel1"></div>
+            <div class="reel" id="reel2"></div>
+            <div class="reel" id="reel3"></div>
+            <div class="reel" id="reel4"></div>
+            <div class="reel" id="reel5"></div>
+            <div class="reel" id="reel6"></div>
         </div>
         <button class="button" onclick="spinReels()">Roztočit</button>
         <div id="result">Zatím žádné výhry!</div>
@@ -75,35 +97,65 @@
         // Možné symboly na automatech
         const symbols = ['🍒', '🍊', '🍋', '7️⃣', '🔔', '💎', '🔥'];
 
-        // Funkce pro simulaci roztočení válců
-        function spinReels() {
-            // Získání náhodného symbolu pro každý válec
-            const reel1 = randomSymbol();
-            const reel2 = randomSymbol();
-            const reel3 = randomSymbol();
-
-            // Nastavení textu pro každý válec
-            document.getElementById('reel1').textContent = reel1;
-            document.getElementById('reel2').textContent = reel2;
-            document.getElementById('reel3').textContent = reel3;
-
-            // Vyhodnocení výhry
-            checkWin(reel1, reel2, reel3);
-        }
-
-        // Funkce pro výběr náhodného symbolu
+        // Funkce pro generování náhodného symbolu
         function randomSymbol() {
             return symbols[Math.floor(Math.random() * symbols.length)];
         }
 
+        // Funkce pro generování náhodného symbolu pro každý válec
+        function generateReels() {
+            const reels = document.querySelectorAll('.reel');
+            reels.forEach(reel => {
+                reel.innerHTML = ''; // Vyčistit předchozí obsah
+                // Vytvořit 8 symbolů pro každý válec
+                for (let i = 0; i < 8; i++) {
+                    const symbolElement = document.createElement('div');
+                    symbolElement.classList.add('symbol');
+                    symbolElement.textContent = randomSymbol();
+                    reel.appendChild(symbolElement);
+                }
+            });
+        }
+
+        // Funkce pro spuštění animace válců
+        function spinReels() {
+            generateReels(); // Generování nových symbolů
+
+            // Vytvoření animace pro každý válec
+            const reels = document.querySelectorAll('.reel');
+            reels.forEach(reel => {
+                reel.style.animation = 'spin 1s linear infinite'; // Spustí animaci
+            });
+
+            // Po 1 sekundě zastavit animace
+            setTimeout(() => {
+                reels.forEach(reel => {
+                    reel.style.animation = ''; // Zastaví animaci
+                });
+                checkWin(); // Kontrola výhry po skončení animace
+            }, 1000);
+        }
+
         // Funkce pro kontrolu výhry
-        function checkWin(reel1, reel2, reel3) {
-            if (reel1 === reel2 && reel2 === reel3) {
-                document.getElementById('result').textContent = `Gratulujeme, vyhráli jste! Výhra: ${reel1.repeat(3)}`;
+        function checkWin() {
+            const reels = document.querySelectorAll('.reel');
+            const winningSymbols = [];
+
+            // Získání symbolů z každého válce
+            reels.forEach(reel => {
+                winningSymbols.push(reel.children[0].textContent); // První symbol každého válce
+            });
+
+            // Zkontrolovat, zda jsou všechny symboly stejné
+            if (winningSymbols.every(symbol => symbol === winningSymbols[0])) {
+                document.getElementById('result').textContent = `Gratulujeme, vyhráli jste! Výhra: ${winningSymbols[0].repeat(3)}`;
             } else {
                 document.getElementById('result').textContent = `Zkuste to znovu.`;
             }
         }
+
+        // Načítání hry při načtení stránky
+        generateReels();
     </script>
 
 </body>

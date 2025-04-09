@@ -148,3 +148,113 @@
 
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herní Automat 100 Hot Wild</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .slot-machine {
+            display: inline-block;
+            background-color: #444;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        .reels {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .reel {
+            background-color: #333;
+            width: 100px;
+            height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+            border-radius: 5px;
+            color: yellow;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        .button {
+            background-color: #28a745;
+            color: white;
+            padding: 15px 30px;
+            font-size: 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .button:disabled {
+            background-color: #ccc;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 24px;
+            color: yellow;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>100 Hot Wild - Herní Automat</h1>
+
+    <div class="slot-machine">
+        <div class="reels">
+            <div class="reel" id="reel1">🍒</div>
+            <div class="reel" id="reel2">🍒</div>
+            <div class="reel" id="reel3">🍒</div>
+        </div>
+        <button class="button" onclick="spinReels()">Roztočit</button>
+        <div id="result">Zatím žádné výhry!</div>
+    </div>
+
+    <script>
+        // Možné symboly na automatech
+        const symbols = ['🍒', '🍊', '🍋', '7️⃣', '🔔', '💎', '🔥'];
+
+        // Funkce pro simulaci roztočení válců
+        function spinReels() {
+            // Získání náhodného symbolu pro každý válec
+            const reel1 = randomSymbol();
+            const reel2 = randomSymbol();
+            const reel3 = randomSymbol();
+
+            // Nastavení textu pro každý válec
+            document.getElementById('reel1').textContent = reel1;
+            document.getElementById('reel2').textContent = reel2;
+            document.getElementById('reel3').textContent = reel3;
+
+            // Vyhodnocení výhry
+            checkWin(reel1, reel2, reel3);
+        }
+
+        // Funkce pro výběr náhodného symbolu
+        function randomSymbol() {
+            return symbols[Math.floor(Math.random() * symbols.length)];
+        }
+
+        // Funkce pro kontrolu výhry
+        function checkWin(reel1, reel2, reel3) {
+            if (reel1 === reel2 && reel2 === reel3) {
+                document.getElementById('result').textContent = `Gratulujeme, vyhráli jste! Výhra: ${reel1.repeat(3)}`;
+            } else {
+                document.getElementById('result').textContent = `Zkuste to znovu.`;
+            }
+        }
+    </script>
+
+</body>
+</html>
